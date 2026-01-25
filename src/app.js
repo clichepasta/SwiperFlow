@@ -1,31 +1,50 @@
-console.log("Starting point");
 const express = require('express');
+const connectDB = require('./config/database');
 const app = express();
-const {adminAuth} = require('./middlewares/auth');
+const User = require('./models/user');
 
-// app.use("/get", (req, res, next) => {
-//     res.send("Started from the server.")
-// });
+app.use(express.json());
 
-app.use("/admin",adminAuth)
+//sign up
+app.post("/signup", async (req, res) => {
+    const userObj = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        emailId: req.body.emailId,
+        password: req.body.password
+    }
 
-app.post("/user/login", (req, res)=> {
-    res.send("User logged in.");
+    const user = new User(userObj); //creating a new instance of User
+    await user.save();
+
+    res.send("User added successfully");
 })
-app.get("/admin/get", (req, res, next) => {
-    // res.send("Started from the server.");
-    next();
-},
-(req, res, next) => {
-    res.send("Started from the server2.");
-}
-);
 
-
-app.delete("/hello", (req, res, next) => {    
-    res.send("Hello Hello Hello.")
+app.get("/user", async (req, res) => {
+    try {
+        const emailId = req.body.emailId;
+        const user = await User.find({ emailId: emailId });
+        if (user.length !== 0) {
+            res.send(user)
+        } else {
+            res.status(400).send("User not found")
+        }
+    } catch (err) {
+        res.status(400).send("Something went wrong")
+    }
 });
 
-app.listen(3000, () => {
-    console.log("Server is running on port 3000");
+app.get("/feed", async (req, res) => {
+    const user = await User.find({});
+    res.send(user)
 });
+
+connectDB()
+    .then(() => {
+        app.listen(7000, () => {
+            console.log("🚀 Server is running on port 7000");
+        });
+    })
+    .catch((err) => {
+        console.error("❌ Database connection failed", err.message);
+    });
