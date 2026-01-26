@@ -33,14 +33,29 @@ app.get("/feed", async (req, res) => {
     res.send(user)
 });
 
-app.patch("/user", async (req, res) => {
-    const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+    const userId = req.params.userId;
+    const data = req.body;
+
     try {
-        const user = await User.findByIdAndUpdate({ _id: userId }, req.body, { ReturnDocument: "before" });
+        const allowedEditFields = [
+            "firstName", "lastName", "age", "gender", "password", "emailId"
+        ]
+        const isUpdateAllowed = Object.keys(data).every((k) => allowedEditFields.includes(k));
+        if (!isUpdateAllowed) {
+            throw new Error("Update not allowed");
+        }
+        if (data?.skills?.length > 10) {
+            throw new Error("Skills can not be more than 10");
+        }
+        const user = await User.findByIdAndUpdate({ _id: userId }, data, {
+            returnDocument: "after",
+            runValidators: true,
+        });
         res.send(user);
     }
     catch (err) {
-        res.status(400).send("Something went wrong");
+        res.status(400).send("Update Failed:" + err.message);
     }
 })
 
@@ -48,10 +63,11 @@ app.delete("/user", async (req, res) => {
     const userId = req.body.userId;
     try {
         const user = await User.findByIdAndDelete(userId);
+
         res.send("User deleted Successfully");
 
     } catch (err) {
-
+        res.status(400).send("Something went wrong");
     }
 })
 
