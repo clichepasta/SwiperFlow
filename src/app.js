@@ -8,14 +8,7 @@ app.use(express.json());
 
 //sign up
 app.post("/signup", async (req, res) => {
-    const userObj = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        emailId: req.body.emailId,
-        password: req.body.password
-    }
-
-    const user = new User(userObj); //creating a new instance of User
+    const user = new User(req.body); //creating a new instance of User
     await user.save();
 
     res.send("User added successfully");
