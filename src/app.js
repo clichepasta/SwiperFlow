@@ -1,24 +1,52 @@
 const express = require('express');
+const bcrypt = require("bcrypt");
 const connectDB = require('./config/database');
 const app = express();
 const User = require('./models/user');
 const { ReturnDocument } = require('mongodb');
+const { validateSignupData } = require("./utils/validation");
+// import validateSignupData from "./utils/validation";
 
 app.use(express.json());
 
 //sign up
 app.post("/signup", async (req, res) => {
-    const userObj = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        emailId: req.body.emailId,
-        password: req.body.password
+    try {
+        validateSignupData(req);
+        const { firstName, lastName, emailId, password } = req.body;
+        const passwordHash = await bcrypt.hash(password, 10);
+
+        const user = new User({
+            firstName,
+            lastName,
+            emailId,
+            password: passwordHash
+        }); //creating a new instance of User
+        await user.save();
+        res.send("User added successfully");
+    } catch (err) {
+        res.status(400).send(err)
     }
+})
 
-    const user = new User(userObj); //creating a new instance of User
-    await user.save();
+app.post("/login", async (req, res) => {
+    try {
+        const { emailId, password } = req.body;
+        const user = await User.findOne({
+            emailId: emailId
+        });
+        if (!user) {
+            throw new Error("User not found");
+        }
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            throw new Error("Invalid password");
+        }
+        res.status(200).json({ message: "Login successful" });
 
-    res.send("User added successfully");
+    } catch (err) {
+        res.status(400).send(err);
+    }
 })
 
 app.get("/user", async (req, res) => {
@@ -40,14 +68,29 @@ app.get("/feed", async (req, res) => {
     res.send(user)
 });
 
-app.patch("/user", async (req, res) => {
-    const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+    const userId = req.params.userId;
+    const data = req.body;
+
     try {
-        const user = await User.findByIdAndUpdate({ _id: userId }, req.body, { ReturnDocument: "before" });
+        const allowedEditFields = [
+            "firstName", "lastName", "age", "gender", "password", "emailId"
+        ]
+        const isUpdateAllowed = Object.keys(data).every((k) => allowedEditFields.includes(k));
+        if (!isUpdateAllowed) {
+            throw new Error("Update not allowed");
+        }
+        if (data?.skills?.length > 10) {
+            throw new Error("Skills can not be more than 10");
+        }
+        const user = await User.findByIdAndUpdate({ _id: userId }, data, {
+            returnDocument: "after",
+            runValidators: true,
+        });
         res.send(user);
     }
     catch (err) {
-        res.status(400).send("Something went wrong");
+        res.status(400).send("Update Failed:" + err.message);
     }
 })
 
@@ -55,10 +98,11 @@ app.delete("/user", async (req, res) => {
     const userId = req.body.userId;
     try {
         const user = await User.findByIdAndDelete(userId);
+
         res.send("User deleted Successfully");
 
     } catch (err) {
-
+        res.status(400).send("Something went wrong");
     }
 })
 
