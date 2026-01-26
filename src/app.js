@@ -2,6 +2,7 @@ const express = require('express');
 const connectDB = require('./config/database');
 const app = express();
 const User = require('./models/user');
+const { ReturnDocument } = require('mongodb');
 
 app.use(express.json());
 
@@ -38,6 +39,28 @@ app.get("/feed", async (req, res) => {
     const user = await User.find({});
     res.send(user)
 });
+
+app.patch("/user", async (req, res) => {
+    const userId = req.body.userId;
+    try {
+        const user = await User.findByIdAndUpdate({ _id: userId }, req.body, { ReturnDocument: "before" });
+        res.send(user);
+    }
+    catch (err) {
+        res.status(400).send("Something went wrong");
+    }
+})
+
+app.delete("/user", async (req, res) => {
+    const userId = req.body.userId;
+    try {
+        const user = await User.findByIdAndDelete(userId);
+        res.send("User deleted Successfully");
+
+    } catch (err) {
+
+    }
+})
 
 connectDB()
     .then(() => {
