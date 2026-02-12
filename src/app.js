@@ -10,14 +10,12 @@ const cookieParser = require("cookie-parser");
 // import validateSignupData from "./utils/validation";
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
-
 const requestRouter = require("./routes/requests");
-
-
+const userRouter = require("./routes/user");
 
 app.use(express.json());
 app.use(cookieParser());
-app.use("/", authRouter, profileRouter, requestRouter);
+app.use("/", authRouter, profileRouter, requestRouter, userRouter);
 
 
 
