@@ -1,0 +1,131 @@
+<main class="pt-24 pb-32 px-4 max-w-screen-xl mx-auto min-h-screen">
+  
+  @if (toastMsg()) {
+    <div class="fixed top-24 right-4 bg-tertiary-container text-on-tertiary-container px-6 py-3 rounded-lg shadow-xl z-50 transform transition-all flex items-center gap-2 font-medium">
+      <span class="material-symbols-outlined text-sm">info</span>
+      {{ toastMsg() }}
+    </div>
+  }
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    <aside class="lg:col-span-4 space-y-6">
+      <div class="bg-surface-container-low rounded-[2rem] p-8 text-center space-y-6 overflow-hidden relative group">
+        <div class="relative inline-block">
+          <img class="w-40 h-40 rounded-full object-cover ring-4 ring-primary/20 group-hover:ring-primary/40 transition-all" 
+               [src]="profileData()?.photoUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuB3IodewMw9SuUREwOQrzxb8FxC7GKhOpQEwq-V2boIAKPneWcnNgyOHp-vn1oLMoOLpM8HZ14UGANEgBgJ0oOqDbagLJ3t61lw3RBbJYn9SDf36V7RQOLuEmHcbL536ejdoFuOP8mxJpJak1NE4SfpRt2BkuTehWIzhD24Jd0YBlExnShqLiz9jflVMyrsTTX0Sbj-M9ppveyiRu3CYYRsgahy72KAmNk20wRycgOFX78Nd4sOsdsiNl-10B1MdnCAbdM9Cro8ikSP'"/>
+          <button class="absolute bottom-1 right-1 bg-primary text-on-primary p-2 rounded-full shadow-lg active:scale-90 transition-transform">
+            <span class="material-symbols-outlined text-sm">photo_camera</span>
+          </button>
+        </div>
+        <div class="space-y-1">
+          <h2 class="text-3xl font-headline font-bold tracking-tight text-on-surface">
+            {{ profileForm.get('firstName')?.value || 'First' }} {{ profileForm.get('lastName')?.value || 'Last' }}
+          </h2>
+          <p class="text-primary font-medium tracking-wide flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-sm">code</span>
+            {{ profileData()?.title || 'Developer' }}
+          </p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-2 pt-2">
+          @for (skill of techStack() | slice:0:4; track skill) {
+            <span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-sm text-xs font-medium">{{skill}}</span>
+          }
+        </div>
+        <div class="pt-4 text-sm text-on-surface-variant leading-relaxed px-4">
+          "{{ profileForm.get('bio')?.value || 'Update your bio below.' }}"
+        </div>
+      </div>
+
+      <div class="bg-surface-container-low rounded-[2rem] p-6 space-y-4">
+        <h3 class="font-headline text-lg font-semibold text-primary">Activity Stats</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-surface-container p-4 rounded-xl text-center">
+            <p class="text-2xl font-headline font-bold">{{ profileData()?.matches || 0 }}</p>
+            <p class="text-[10px] uppercase tracking-widest text-on-surface-variant">Matches</p>
+          </div>
+          <div class="bg-surface-container p-4 rounded-xl text-center">
+            <p class="text-2xl font-headline font-bold">{{ profileData()?.activeCollabs || 0 }}</p>
+            <p class="text-[10px] uppercase tracking-widest text-on-surface-variant">Active Collabs</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <section class="lg:col-span-8 space-y-8">
+      <div class="bg-surface-container-low rounded-[2.5rem] p-8 md:p-10">
+        <div class="flex items-center gap-3 mb-8">
+          <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">person</span>
+          <h2 class="text-2xl font-headline font-bold">Edit Profile</h2>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="updateProfile()" class="space-y-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold px-1">First Name</label>
+              <input formControlName="firstName" class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline transition-all" type="text" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold px-1">Last Name</label>
+              <input formControlName="lastName" class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline transition-all" type="text" />
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold px-1">Professional Bio</label>
+            <textarea formControlName="bio" class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline transition-all resize-none" rows="4"></textarea>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold px-1">Primary Tech Stack</label>
+            <div class="bg-surface-container-lowest rounded-xl p-4 flex flex-wrap gap-2">
+              
+              @for (skill of techStack(); track skill) {
+                <span class="bg-primary/10 text-primary px-3 py-1 rounded-sm text-xs flex items-center gap-2 border border-primary/20">
+                  {{ skill }} <span (click)="removeSkill(skill)" class="material-symbols-outlined text-[14px] cursor-pointer hover:text-error transition-colors">close</span>
+                </span>
+              }
+
+              <button (click)="addSkill()" class="text-on-surface-variant px-3 py-1 rounded-sm text-xs flex items-center gap-1 border border-outline-variant hover:border-primary transition-colors hover:text-primary" type="button">
+                <span class="material-symbols-outlined text-[14px]">add</span> Add Tech
+              </button>
+            </div>
+          </div>
+
+          <div class="pt-4 flex justify-end">
+            <button [disabled]="profileForm.invalid" class="bg-gradient-to-r from-primary to-primary-dim text-on-primary px-8 py-3 rounded-full font-bold tracking-wide active:scale-95 transition-transform shadow-lg shadow-primary/20 disabled:opacity-50">
+              Update Profile
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="bg-surface-container-low rounded-[2rem] p-8 md:p-10">
+        <div class="flex items-center gap-3 mb-8">
+          <span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">lock</span>
+          <h2 class="text-2xl font-headline font-bold">Change Password</h2>
+        </div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="space-y-2">
+              <label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold px-1">New Password</label>
+              <input formControlName="password" class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline transition-all" placeholder="••••••••" type="password"/>
+            </div>
+            <div class="space-y-2">
+              <label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold px-1">Confirm Password</label>
+              <input formControlName="confirmPassword" class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline transition-all" placeholder="••••••••" type="password"/>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center pt-2">
+            <p class="text-xs text-on-surface-variant max-w-xs">Use at least 8 characters with a mix of letters, numbers & symbols.</p>
+            <button [disabled]="passwordForm.invalid" class="bg-surface-container-highest text-on-surface hover:text-primary px-6 py-3 rounded-full font-bold tracking-wide active:scale-95 transition-all disabled:opacity-50">
+              Change Password
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </section>
+  </div>
+</main>

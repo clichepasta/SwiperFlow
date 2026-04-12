@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+
+  body {
+    min-height: max(884px, 100dvh);
+  }
+
+  /* Custom scrollbar for SwiperFlow theme */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #060e20;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #192540;
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #40485d;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    background: rgba(25, 37, 64, 0.6);
+    backdrop-filter: blur(20px);
+  }
+
+  .headline-font {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .syntax-glow {
+    text-shadow: 0 0 10px rgba(163, 166, 255, 0.4);
+  }
+
+  .card-stack-shadow {
+    box-shadow: 0px 24px 48px rgba(0, 0, 0, 0.4);
+  }
+}

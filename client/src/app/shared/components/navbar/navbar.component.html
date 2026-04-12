@@ -1,0 +1,19 @@
+<header class="bg-[#060e20]/80 backdrop-blur-xl fixed top-0 w-full z-50">
+  <div class="flex justify-between items-center px-6 h-16 w-full max-w-screen-xl mx-auto">
+    <div class="flex items-center gap-3 active:scale-95 duration-200 cursor-pointer" routerLink="/">
+      <span class="material-symbols-outlined text-primary">terminal</span>
+      <h1 class="text-2xl font-bold bg-gradient-to-r from-primary to-primary-dim bg-clip-text text-transparent font-['Space_Grotesk'] tracking-tight">SwiperFlow</h1>
+    </div>
+    <div class="flex items-center gap-4">
+      <button class="p-2 rounded-full hover:bg-surface-variant transition-colors text-on-surface active:scale-95 duration-200">
+        <span class="material-symbols-outlined">search</span>
+      </button>
+      <button class="p-2 rounded-full hover:bg-surface-variant transition-colors text-primary active:scale-95 duration-200">
+        <span class="material-symbols-outlined">settings</span>
+      </button>
+      <button (click)="logout()" class="p-2 rounded-full hover:bg-error/20 transition-colors text-error active:scale-95 duration-200">
+        <span class="material-symbols-outlined">logout</span>
+      </button>
+    </div>
+  </div>
+</header>
