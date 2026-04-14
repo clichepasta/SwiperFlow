@@ -5,7 +5,7 @@ const { adminAuth } = require("../middlewares/auth")
 const connectionRequestModel = require("../models/connectionRequest");
 const User = require("../models/user");
 
-//status: intrested, rejected, accepted, ignore
+//status: interested, rejected, accepted, ignore
 
 requestRouter.post("/request/send/:status/:toUserId", adminAuth, async (req, res) => {
     try {
@@ -17,7 +17,7 @@ requestRouter.post("/request/send/:status/:toUserId", adminAuth, async (req, res
             return res.status(400).json({ message: "Cannot send request to yourself" });
         }
 
-        const allowedStatus = ["ignore", "intrested"];
+        const allowedStatus = ["ignore", "interested"];
         if (!allowedStatus.includes(status)) {
             return res.status(400).json({ message: "Invalid status type: " + status });
         }

@@ -18,7 +18,7 @@ export class LoginComponent {
   submitting = signal<boolean>(false);
 
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    emailId: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]]
   });
 
