@@ -19,7 +19,7 @@ const adminAuth = async (req, res, next) => {
 
     }
     catch (err) {
-        res.status(400).send("Something went wrong");
+        res.status(401).send("Unauthorized");
     }
 
 }

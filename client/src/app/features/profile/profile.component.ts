@@ -38,7 +38,7 @@ export class ProfileComponent implements OnInit {
         this.profileForm.patchValue({
           firstName: data.firstName || '',
           lastName: data.lastName || '',
-          bio: data.bio || ''
+          bio: data.about || ''
         });
         if (data.skills && Array.isArray(data.skills)) {
           this.techStack.set(data.skills);
@@ -62,7 +62,9 @@ export class ProfileComponent implements OnInit {
     if (this.profileForm.invalid) return;
     
     const payload = {
-      ...this.profileForm.value,
+      firstName: this.profileForm.value.firstName,
+      lastName: this.profileForm.value.lastName,
+      about: this.profileForm.value.bio,
       skills: this.techStack()
     };
 

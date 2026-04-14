@@ -10,7 +10,7 @@ userRouter.get("/user/request/received", adminAuth, async (req, res) => {
         const user = req.user;
         const receivedRequests = await connectionRequestModel.find({
             toUserId: user._id,
-            status: "intrested"
+            status: "interested"
         }).populate(
             "fromUserId",
             ["firstName", "lastName", "age", "gender", "about", "skills"]
