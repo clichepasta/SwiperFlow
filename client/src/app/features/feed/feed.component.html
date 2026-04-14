@@ -1,0 +1,90 @@
+<main class="pt-24 px-4 flex flex-col items-center max-w-screen-xl mx-auto min-h-screen">
+  <div class="w-full max-w-md mb-6 flex items-center justify-between px-2">
+    <div class="flex flex-col">
+      <h1 class="text-3xl font-bold tracking-tight text-on-surface">Feed</h1>
+      <p class="text-sm text-on-surface-variant">Recommended for your stack</p>
+    </div>
+    <button class="flex items-center gap-2 bg-surface-container-high px-4 py-2 rounded-full text-sm font-medium hover:bg-surface-container-highest transition-colors cursor-pointer active:scale-95">
+      <span class="material-symbols-outlined text-sm">tune</span>
+      Refine
+    </button>
+  </div>
+
+  @if (feedQueue().length > 0) {
+    <!-- Swipe Card Container -->
+    <div class="relative w-full max-w-md aspect-[3/4] group">
+      <!-- Card Stack Visual -->
+      <div class="absolute inset-0 translate-y-8 scale-[0.88] bg-surface-container-low/30 rounded-[2.5rem] border border-white/5 -z-30 blur-[1px]"></div>
+      <div class="absolute inset-0 translate-y-6 scale-[0.92] bg-surface-container-low/60 rounded-[2.5rem] border border-white/5 -z-20"></div>
+      
+      <!-- Active Card -->
+      <div class="relative w-full h-full bg-surface-container-low rounded-[2.5rem] overflow-hidden card-stack-shadow border border-primary/20 flex flex-col transition-transform duration-300">
+        
+        <!-- Profile Image -->
+        <div class="relative h-3/5 w-full overflow-hidden bg-surface-container-highest">
+          <img [src]="feedQueue()[0].photoUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuA8272hu9QJu1ApvvVhOsHiSvC6x05ASC1g_BSY2acsjxu-mtW4mcPTq5J8-1sNA26H8z0zJuc9UOaPvZMKp5azAt0JmQ9uo6F0t4sBuTJMJ7ja3_mKDqOCMGuz7F_228gcl1eYW05Yf1bLIRJnb6xLrCbBi3FPbH5nS2Nev90_j3xfYTblJqe7DY8cUl8_2ys_FaCDbFziXarNkrMjI8rSZWXyKWtHUH6el1Sn0X9mQi--GrSXyi4LCxFL8pMIiL0WtfXII-Td0BRP'" class="w-full h-full object-cover"/>
+          
+          <div class="absolute top-0 left-0 w-full p-6 bg-gradient-to-b from-black/70 to-transparent">
+            <div class="flex justify-between items-start">
+              <div class="bg-secondary/20 backdrop-blur-md px-3 py-1 rounded-full border border-secondary/30 flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                <span class="text-[10px] font-bold text-secondary tracking-widest uppercase">Available</span>
+              </div>
+            </div>
+          </div>
+          <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="flex-1 px-8 pt-2 pb-8 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <h2 class="text-2xl font-bold text-on-surface">{{ feedQueue()[0].firstName }} {{ feedQueue()[0].lastName }}</h2>
+            </div>
+            <p class="text-primary-fixed font-medium text-sm mb-4">{{ feedQueue()[0].title || 'Developer' }}</p>
+            <p class="text-on-surface-variant text-sm leading-relaxed line-clamp-3 mb-6">
+              {{ feedQueue()[0].bio || 'Ready to code.' }}
+            </p>
+
+            <div class="flex flex-wrap gap-2">
+              @for (skill of feedQueue()[0].skills | slice:0:5; track skill) {
+                <span class="bg-secondary-container/30 text-secondary border border-secondary/20 px-3 py-1 rounded-md text-[10px] font-bold tracking-tight uppercase">{{ skill }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Swipe Action Buttons -->
+    <div class="w-full max-w-md mt-10 flex items-center justify-center gap-8 relative pb-20">
+      <div class="flex flex-col items-center gap-2">
+        <button (click)="swipe('ignore')" class="w-16 h-16 flex items-center justify-center rounded-full bg-surface-container-highest border border-error/20 text-error-dim hover:bg-error hover:text-white transition-all duration-300 active:scale-90 shadow-lg group/btn">
+          <span class="material-symbols-outlined text-3xl">close</span>
+        </button>
+      </div>
+
+      <button class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-highest border border-tertiary/20 text-tertiary-fixed hover:bg-tertiary-container hover:text-on-tertiary transition-all duration-300 active:scale-90 mb-4 cursor-help">
+        <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">star</span>
+      </button>
+
+      <div class="flex flex-col items-center gap-2">
+        <button (click)="swipe('interested')" class="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-dim text-on-primary shadow-xl shadow-primary/20 hover:scale-110 hover:shadow-primary/40 transition-all duration-300 active:scale-95 group/btn">
+          <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'wght' 700;">check</span>
+        </button>
+      </div>
+    </div>
+
+  } @else if (isLoading()) {
+    <div class="flex-1 flex flex-col items-center justify-center mt-20">
+      <div class="animate-spin w-10 h-10 border-4 border-primary border-t-transparent rounded-full mb-4"></div>
+      <p class="text-on-surface-variant font-medium tracking-wide">Compiling developers...</p>
+    </div>
+  } @else {
+    <div class="flex-1 flex flex-col items-center justify-center mt-20 text-center pb-32 px-4">
+      <span class="material-symbols-outlined text-6xl text-surface-container-highest mb-4">inbox_customize</span>
+      <h2 class="text-2xl font-headline font-bold text-on-surface-variant">No more developers</h2>
+      <p class="text-on-surface-variant/60 max-w-xs mx-auto mt-2">You have swiped through all available connections. Please check back later.</p>
+    </div>
+  }
+</main>

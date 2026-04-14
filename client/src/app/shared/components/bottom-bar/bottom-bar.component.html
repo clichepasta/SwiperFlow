@@ -1,0 +1,26 @@
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-4 pt-2 bg-[#091328]/95 backdrop-blur-xl z-50 rounded-t-[2rem] shadow-[0px_-8px_32px_rgba(0,0,0,0.6)] border-t border-white/5">
+    <a routerLink="/feed" routerLinkActive="bg-primary/15 text-primary rounded-2xl"
+       [routerLinkActiveOptions]="{exact: true}"
+       class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-primary active:scale-90 transition-all px-4 py-2">
+      <span class="material-symbols-outlined" data-icon="style">style</span>
+      <span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">Feed</span>
+    </a>
+    
+    <a routerLink="/requests" routerLinkActive="bg-primary/15 text-primary rounded-2xl"
+       class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-primary active:scale-90 transition-all px-4 py-2">
+      <span class="material-symbols-outlined" data-icon="dynamic_feed">dynamic_feed</span>
+      <span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">Requests</span>
+    </a>
+    
+    <a routerLink="/connections" routerLinkActive="bg-primary/15 text-primary rounded-2xl"
+       class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-primary active:scale-90 transition-all px-4 py-2">
+      <span class="material-symbols-outlined" data-icon="hub">hub</span>
+      <span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">Network</span>
+    </a>
+    
+    <a routerLink="/profile" routerLinkActive="bg-primary/15 text-primary rounded-2xl"
+       class="flex flex-col items-center justify-center text-on-surface-variant/60 hover:text-primary active:scale-90 transition-all px-4 py-2">
+      <span class="material-symbols-outlined" data-icon="person">person</span>
+      <span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">Me</span>
+    </a>
+  </nav>

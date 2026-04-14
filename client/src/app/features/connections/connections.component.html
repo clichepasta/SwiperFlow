@@ -1,0 +1,72 @@
+<main class="max-w-screen-xl mx-auto px-6 pt-24 pb-32 min-h-screen">
+  <!-- Page Header -->
+  <div class="mb-12">
+    <h2 class="text-5xl font-bold font-headline tracking-tight mb-2">Connections</h2>
+    <p class="text-on-surface-variant font-medium tracking-wide text-sm uppercase">COMPILING COLLABORATORS...</p>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex-1 flex flex-col items-center justify-center mt-20">
+      <div class="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full mb-4"></div>
+    </div>
+  } @else {
+
+    <!-- Connections Grid -->
+    <section>
+      <div class="flex flex-wrap justify-between items-end mb-8 gap-4">
+        <div>
+          <h3 class="text-sm font-semibold text-primary uppercase tracking-[0.2em] mb-1">Active Clusters</h3>
+          <p class="text-on-surface-variant text-xs">All established developer links</p>
+        </div>
+        <div class="flex bg-surface-container-low rounded-full p-1">
+          <button class="px-4 py-1.5 bg-surface-container-highest rounded-full text-xs font-bold text-primary transition-all">All</button>
+          <button class="px-4 py-1.5 text-xs font-bold text-on-surface-variant hover:text-on-surface transition-all">Collabs</button>
+        </div>
+      </div>
+
+      @if (connections().length === 0) {
+        <div class="mt-16 p-8 rounded-2xl bg-surface-container-low border border-dashed border-outline-variant/30 text-center">
+          <span class="material-symbols-outlined text-4xl text-outline mb-4">hub</span>
+          <p class="text-on-surface-variant font-medium mb-6">No connections established yet.</p>
+          <button routerLink="/feed" class="px-8 py-3 bg-gradient-to-r from-primary to-primary-dim text-on-primary-fixed font-bold rounded-xl active:scale-95 duration-200">
+            Find Matches
+          </button>
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          @for (connection of connections(); track connection._id) {
+            <!-- Helper: Sometimes it returns populated users based on who requested who -->
+            <!-- Typically backend maps it to a unified object, we'll assume it's directly accessible -->
+            <div class="group relative bg-surface-container-low rounded-xl p-5 border border-transparent hover:border-primary/20 transition-all duration-300 hover:bg-surface-container-high active:scale-[0.98] cursor-pointer">
+              <div class="flex items-start gap-4">
+                <img class="w-16 h-16 rounded-lg object-cover ring-1 ring-outline-variant/30 group-hover:ring-primary/40 transition-all" 
+                     [src]="connection.photoUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuCoFMhSFUrKFSH2S3zOzk9BLEaH7v5jNslZKUI0dwUs71a0U6Gdu2ZUh8mDCfjRQq8DYe69lbZ4EeT-Z8T0ZXQe_6N_X_GBS6GSSSPv8EuWNorsWdkLlTwgxoJjdbZTK5s90loVc9n9ns65TE_p_B-7_wAE7wOTcVskkd3A6t0w-PBxC21oSvVj93dXTxqlD_sj3LNfDA7OTJXGG5cIeTw2mntvREnealYlHUkFINBmhAfnCVGdoUDM8eXjyDOxLFWof2tiEDJGK_QE'" />
+                <div class="flex-grow min-w-0">
+                  <div class="flex items-center justify-between mb-1">
+                    <h4 class="font-bold font-headline truncate text-lg">{{ connection.firstName }} {{ connection.lastName }}</h4>
+                    <span class="text-[10px] bg-surface-container-highest text-on-surface-variant px-2 py-0.5 rounded-sm font-mono tracking-tighter">OFFLINE</span>
+                  </div>
+                  <p class="text-sm text-on-surface-variant mb-3 line-clamp-1">{{ connection.title || 'Developer' }}</p>
+                  <div class="flex gap-2 flex-wrap">
+                    @for (skill of connection.skills | slice:0:3; track skill) {
+                      <span class="text-[10px] px-2 py-1 bg-surface-container-highest rounded font-mono text-primary-fixed">#{{skill}}</span>
+                    }
+                  </div>
+                </div>
+              </div>
+              <div class="mt-4 pt-4 border-t border-outline-variant/10 flex justify-between items-center opacity-60 group-hover:opacity-100 transition-opacity">
+                <p class="text-[10px] font-mono text-on-surface-variant">Matched</p>
+                <div class="flex gap-3">
+                  <span class="material-symbols-outlined text-xl hover:text-primary">forum</span>
+                  <span class="material-symbols-outlined text-xl hover:text-primary">person</span>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+
+  }
+</main>
