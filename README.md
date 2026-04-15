@@ -271,6 +271,55 @@ server {
 
 ---
 
+## Deployment
+
+The application is hosted on **AWS EC2** (Ubuntu) with **Nginx** acting as a reverse proxy in front of the Node.js API.
+
+```
+┌──────────────┐       ┌───────────────────────────────────────────┐
+│   Internet   │──────▶│              AWS EC2 Instance              │
+└──────────────┘  :80  │                                           │
+                       │   ┌─────────────┐      ┌──────────────┐  │
+                       │   │    Nginx     │─────▶│  Node.js API  │ │
+                       │   │ Reverse Proxy│ :7000│  (Express 5) │  │
+                       │   └─────────────┘      └──────────────┘  │
+                       │                                           │
+                       │   Static Angular build served by Nginx    │
+                       └───────────────────────────────────────────┘
+```
+
+**Infrastructure summary:**
+
+| Layer | Technology | Role |
+|---|---|---|
+| Cloud | AWS EC2 (Ubuntu) | Hosts both frontend and backend |
+| Reverse proxy | Nginx | Routes `/api` traffic to Node.js on port 7000; serves Angular static build for all other routes |
+| Process management | (Node.js direct / PM2-ready) | Keeps the API process alive |
+| Database | MongoDB | Runs on the same instance or Atlas |
+
+**Nginx config pattern used:**
+
+```nginx
+server {
+    listen 80;
+
+    # Serve Angular SPA
+    location / {
+        root /var/www/swiperflow;\n        try_files $uri $uri/ /index.html;
+    }
+
+    # Proxy API requests to Node.js
+    location /api/ {
+        proxy_pass http://localhost:7000/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+---
+
 ## Author
 
 **Rahul Patnaik** — [github.com/clichepasta](https://github.com/clichepasta)
