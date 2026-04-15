@@ -33,7 +33,7 @@ export class SignupComponent {
     this.authService.signup(this.signupForm.value).subscribe({
       next: () => {
         this.submitting.set(false);
-        this.router.navigate(['/feed']);
+        this.router.navigate(['/auth/login']);
       },
       error: (err) => {
         this.submitting.set(false);
