@@ -4,11 +4,35 @@
       <h1 class="text-3xl font-bold tracking-tight text-on-surface">Feed</h1>
       <p class="text-sm text-on-surface-variant">Recommended for your stack</p>
     </div>
-    <button class="flex items-center gap-2 bg-surface-container-high px-4 py-2 rounded-full text-sm font-medium hover:bg-surface-container-highest transition-colors cursor-pointer active:scale-95">
+    <button (click)="showFilters.set(!showFilters())" class="flex items-center gap-2 bg-surface-container-high px-4 py-2 rounded-full text-sm font-medium hover:bg-surface-container-highest transition-colors cursor-pointer active:scale-95" [class.text-primary]="showFilters()">
       <span class="material-symbols-outlined text-sm">tune</span>
       Refine
     </button>
   </div>
+
+  @if (showFilters()) {
+    <div class="w-full max-w-md bg-surface-container-low rounded-3xl p-6 mb-8 border border-primary/10 shadow-xl animate-in slide-in-from-top-4 duration-300">
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="space-y-1.5">
+          <label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold px-1">Gender</label>
+          <select [(ngModel)]="genderFilter" class="w-full bg-surface-container border-none rounded-xl px-3 py-2 text-xs text-on-surface focus:ring-1 focus:ring-primary/40">
+            <option value="">All</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+        <div class="space-y-1.5">
+          <label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold px-1">Tech Skill</label>
+          <input [(ngModel)]="skillFilter" placeholder="e.g. React" class="w-full bg-surface-container border-none rounded-xl px-3 py-2 text-xs text-on-surface placeholder:text-outline-variant focus:ring-1 focus:ring-primary/40" />
+        </div>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button (click)="genderFilter.set(''); skillFilter.set(''); applyFilters()" class="text-[10px] uppercase tracking-widest font-bold text-on-surface-variant hover:text-primary transition-colors">Clear</button>
+        <button (click)="applyFilters()" class="bg-primary text-on-primary px-4 py-1.5 rounded-full text-xs font-bold shadow-md shadow-primary/20 hover:scale-105 active:scale-95 transition-all">Apply Filters</button>
+      </div>
+    </div>
+  }
 
   @if (feedQueue().length > 0) {
     <!-- Swipe Card Container -->
@@ -30,6 +54,12 @@
                 <span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
                 <span class="text-[10px] font-bold text-secondary tracking-widest uppercase">Available</span>
               </div>
+              
+              @if (getSimilarityScore(feedQueue()[0].skills) > 0) {
+                <div class="bg-primary/80 backdrop-blur-md px-3 py-1 rounded-full border border-primary/30 flex items-center gap-1.5">
+                  <span class="text-[10px] font-bold text-on-primary tracking-widest uppercase">{{ getSimilarityScore(feedQueue()[0].skills) }}% Match</span>
+                </div>
+              }
             </div>
           </div>
           <div class="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-surface-container-low to-transparent"></div>
@@ -38,11 +68,28 @@
         <!-- Profile Details -->
         <div class="flex-1 px-8 pt-2 pb-8 flex flex-col justify-between">
           <div>
-            <div class="flex items-center gap-2 mb-1">
+            <div class="flex items-center justify-between mb-1">
               <h2 class="text-2xl font-bold text-on-surface">{{ feedQueue()[0].firstName }} {{ feedQueue()[0].lastName }}</h2>
+              @if (feedQueue()[0].githubUsername) {
+                <div class="flex items-center gap-1 bg-surface-container-highest px-2 py-0.5 rounded-md border border-primary/20">
+                  <span class="material-symbols-outlined text-[14px] text-primary">link</span>
+                  <span class="text-[9px] font-bold text-on-surface-variant uppercase tracking-tighter">{{ feedQueue()[0].githubUsername }}</span>
+                </div>
+              }
             </div>
             <p class="text-primary-fixed font-medium text-sm mb-4">{{ feedQueue()[0].title || 'Developer' }}</p>
-            <p class="text-on-surface-variant text-sm leading-relaxed line-clamp-3 mb-6">
+            
+            @if (feedQueue()[0].githubUsername) {
+              <div class="mb-4 bg-black/5 rounded-xl p-1 overflow-hidden h-16 flex items-center justify-center">
+                <img 
+                  [src]="'https://github-readme-stats.vercel.app/api/top-langs/?username=' + feedQueue()[0].githubUsername + '&layout=compact&theme=transparent&hide_border=true&title_color=6750a4&text_color=49454f&bg_color=00000000'" 
+                  class="h-full w-auto object-contain"
+                  alt="GitHub Languages"
+                />
+              </div>
+            }
+
+            <p class="text-on-surface-variant text-sm leading-relaxed line-clamp-2 mb-4">
               {{ feedQueue()[0].bio || 'Ready to code.' }}
             </p>
 
