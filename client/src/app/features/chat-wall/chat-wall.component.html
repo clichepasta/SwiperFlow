@@ -1,0 +1,60 @@
+<main class="pt-24 px-6 pb-32 max-w-screen-xl mx-auto min-h-screen">
+  <div class="mb-8 flex items-center justify-between gap-4">
+    <div>
+      <h1 class="font-headline text-4xl font-bold text-on-surface tracking-tight mb-1">Chat Wall</h1>
+      <p class="text-on-surface-variant text-sm">A shared wall where everyone can drop updates.</p>
+    </div>
+    <a
+      routerLink="/chat"
+      class="px-4 py-2 rounded-xl bg-surface-container-highest text-sm font-semibold text-primary hover:bg-primary/10 transition-colors"
+    >
+      Open Direct Chat
+    </a>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="mb-5 rounded-xl border border-error/40 bg-error/10 px-4 py-3 text-sm text-error">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  <section class="bg-surface-container-low rounded-2xl border border-outline-variant/20 overflow-hidden">
+    <form (ngSubmit)="postToWall()" class="p-4 border-b border-outline-variant/20 flex flex-col sm:flex-row gap-3">
+      <textarea
+        name="wallMessage"
+        [(ngModel)]="draft"
+        maxlength="500"
+        rows="2"
+        placeholder="Share an update with everyone..."
+        class="flex-1 resize-none bg-surface-container-highest rounded-xl px-4 py-3 text-sm outline-none border border-transparent focus:border-primary/40"
+      ></textarea>
+      <button
+        type="submit"
+        [disabled]="!draft.trim() || isPosting()"
+        class="px-5 py-3 rounded-xl bg-primary text-on-primary text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        Post
+      </button>
+    </form>
+
+    <div class="p-4 space-y-3 max-h-[70vh] overflow-y-auto">
+      @if (isLoading()) {
+        <p class="text-sm text-on-surface-variant">Loading wall messages...</p>
+      } @else if (messages().length === 0) {
+        <p class="text-sm text-on-surface-variant">No posts yet. Start the wall conversation.</p>
+      } @else {
+        @for (message of messages(); track message._id) {
+          <article class="rounded-xl bg-surface-container-highest p-4">
+            <div class="flex items-center justify-between gap-3 mb-2">
+              <h3 class="font-semibold text-on-surface">
+                {{ message.userId.firstName }} {{ message.userId.lastName || '' }}
+              </h3>
+              <p class="text-xs text-on-surface-variant">{{ message.createdAt | date:'medium' }}</p>
+            </div>
+            <p class="text-sm text-on-surface whitespace-pre-wrap break-words">{{ message.text }}</p>
+          </article>
+        }
+      }
+    </div>
+  </section>
+</main>
