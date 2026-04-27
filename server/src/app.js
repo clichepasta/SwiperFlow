@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bcrypt = require("bcrypt");
 const connectDB = require('./config/database');
@@ -12,6 +13,8 @@ const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const requestRouter = require("./routes/requests");
 const userRouter = require("./routes/user");
+const chatRouter = require("./routes/chat");
+const statsRouter = require("./routes/stats");
 
 const cors = require('cors');
 
@@ -21,7 +24,9 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
-app.use("/", authRouter, profileRouter, requestRouter, userRouter);
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use("/", authRouter, profileRouter, requestRouter, userRouter, chatRouter, statsRouter);
 
 
 
@@ -74,9 +79,15 @@ app.use("/", authRouter, profileRouter, requestRouter, userRouter);
 
 
 
+const http = require("http");
+const initializeSocket = require("./utils/socket");
+
+const server = http.createServer(app);
+initializeSocket(server);
+
 connectDB()
     .then(() => {
-        app.listen(7000, () => {
+        server.listen(7000, () => {
             console.log("🚀 Server is running on port 7000");
         });
     })

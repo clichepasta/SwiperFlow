@@ -8,7 +8,7 @@ const adminAuth = async (req, res, next) => {
         if (!token) {
             throw new Error("Unauthorized");
         }
-        const decodedToken = jwt.verify(token, "DEV_TINDER$790");
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET || "DEV_TINDER$790");
         const id = decodedToken._id;
         const user = await User.findById(id);
         if (!user) {
