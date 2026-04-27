@@ -101,13 +101,19 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     // Listen for typing status
     this.socketService.onUserTyping((data: any) => {
-      if (data.userId === this.selectedConnectionId()) {
+      const incomingId = String(data.userId);
+      const currentSelectedId = String(this.selectedConnectionId());
+      
+      if (incomingId === currentSelectedId) {
         this.isPeerTyping.set(true);
       }
     });
 
     this.socketService.onUserStoppedTyping((data: any) => {
-      if (data.userId === this.selectedConnectionId()) {
+      const incomingId = String(data.userId);
+      const currentSelectedId = String(this.selectedConnectionId());
+
+      if (incomingId === currentSelectedId) {
         this.isPeerTyping.set(false);
       }
     });
