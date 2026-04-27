@@ -235,7 +235,10 @@ export class ChatComponent implements OnInit, OnDestroy {
       return null;
     }
 
-    const peer = record.fromUserId._id === loggedInUserId ? record.toUserId : record.fromUserId;
+    const fromId = String(record.fromUserId._id);
+    const myId = String(loggedInUserId);
+
+    const peer = fromId === myId ? record.toUserId : record.fromUserId;
 
     return {
       ...peer,
