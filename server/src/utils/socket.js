@@ -5,7 +5,7 @@ const User = require("../models/user");
 const initializeSocket = (server) => {
     const io = socketio(server, {
         cors: {
-            origin: "http://localhost:4200",
+            origin: ["http://localhost:4200", "http://13.201.63.201", "http://swiperflow.clichepasta.site"], // Added production origins
             credentials: true,
         },
     });
