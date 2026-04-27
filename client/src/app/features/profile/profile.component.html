@@ -13,7 +13,8 @@
         <div class="relative inline-block">
           <img class="w-40 h-40 rounded-full object-cover ring-4 ring-primary/20 group-hover:ring-primary/40 transition-all" 
                [src]="profileData()?.photoUrl || 'https://lh3.googleusercontent.com/aida-public/AB6AXuB3IodewMw9SuUREwOQrzxb8FxC7GKhOpQEwq-V2boIAKPneWcnNgyOHp-vn1oLMoOLpM8HZ14UGANEgBgJ0oOqDbagLJ3t61lw3RBbJYn9SDf36V7RQOLuEmHcbL536ejdoFuOP8mxJpJak1NE4SfpRt2BkuTehWIzhD24Jd0YBlExnShqLiz9jflVMyrsTTX0Sbj-M9ppveyiRu3CYYRsgahy72KAmNk20wRycgOFX78Nd4sOsdsiNl-10B1MdnCAbdM9Cro8ikSP'"/>
-          <button class="absolute bottom-1 right-1 bg-primary text-on-primary p-2 rounded-full shadow-lg active:scale-90 transition-transform">
+          <input #fileInput type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden" />
+          <button (click)="fileInput.click()" class="absolute bottom-1 right-1 bg-primary text-on-primary p-2 rounded-full shadow-lg active:scale-90 transition-transform">
             <span class="material-symbols-outlined text-sm">photo_camera</span>
           </button>
         </div>
@@ -40,12 +41,12 @@
         <h3 class="font-headline text-lg font-semibold text-primary">Activity Stats</h3>
         <div class="grid grid-cols-2 gap-4">
           <div class="bg-surface-container p-4 rounded-xl text-center">
-            <p class="text-2xl font-headline font-bold">{{ profileData()?.matches || 0 }}</p>
+            <p class="text-2xl font-headline font-bold">{{ dashboardStats()?.userMatches || 0 }}</p>
             <p class="text-[10px] uppercase tracking-widest text-on-surface-variant">Matches</p>
           </div>
           <div class="bg-surface-container p-4 rounded-xl text-center">
-            <p class="text-2xl font-headline font-bold">{{ profileData()?.activeCollabs || 0 }}</p>
-            <p class="text-[10px] uppercase tracking-widest text-on-surface-variant">Active Collabs</p>
+            <p class="text-2xl font-headline font-bold">{{ dashboardStats()?.totalConnections || 0 }}</p>
+            <p class="text-[10px] uppercase tracking-widest text-on-surface-variant">Total Network</p>
           </div>
         </div>
       </div>
@@ -71,6 +72,20 @@
           </div>
 
           <div class="space-y-2">
+            <label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold px-1">GitHub Username</label>
+            <input formControlName="githubUsername" class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline transition-all" type="text" placeholder="e.g. torvalds" />
+            @if (profileForm.get('githubUsername')?.value) {
+              <div class="mt-4 p-4 bg-surface-container-highest/10 rounded-2xl border border-primary/5">
+                <img 
+                  [src]="'https://github-readme-stats.vercel.app/api?username=' + profileForm.get('githubUsername')?.value + '&show_icons=true&theme=transparent&title_color=6750a4&text_color=49454f&icon_color=6750a4&hide_border=true&bg_color=00000000'" 
+                  class="w-full h-auto max-h-48 object-contain"
+                  alt="GitHub Stats"
+                />
+              </div>
+            }
+          </div>
+
+          <div class="space-y-2">
             <label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold px-1">Professional Bio</label>
             <textarea formControlName="bio" class="w-full bg-surface-container-lowest border-none rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary/20 text-on-surface placeholder:text-outline transition-all resize-none" rows="4"></textarea>
           </div>
@@ -85,9 +100,22 @@
                 </span>
               }
 
-              <button (click)="addSkill()" class="text-on-surface-variant px-3 py-1 rounded-sm text-xs flex items-center gap-1 border border-outline-variant hover:border-primary transition-colors hover:text-primary" type="button">
-                <span class="material-symbols-outlined text-[14px]">add</span> Add Tech
-              </button>
+              <div class="flex items-center gap-2 bg-surface-container-highest/30 rounded-lg px-2 focus-within:ring-1 focus-within:ring-primary/40 transition-all">
+                <input 
+                  [(ngModel)]="newSkill" 
+                  [ngModelOptions]="{standalone: true}"
+                  (keyup.enter)="addSkill($event)"
+                  placeholder="Add skill (e.g. React)" 
+                  class="bg-transparent border-none py-1.5 text-xs outline-none w-32 placeholder:text-outline-variant"
+                />
+                <button 
+                  (click)="addSkill($event)" 
+                  type="button"
+                  class="text-primary hover:scale-110 transition-transform active:scale-90"
+                >
+                  <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                </button>
+              </div>
             </div>
           </div>
 

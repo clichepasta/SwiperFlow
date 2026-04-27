@@ -1,6 +1,7 @@
 @if (authService.isInitialized()) {
   @if (authService.user()) {
     <app-navbar></app-navbar>
+    <app-notifications></app-notifications>
   }
   
   <router-outlet></router-outlet>

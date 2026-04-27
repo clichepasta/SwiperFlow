@@ -38,10 +38,10 @@ userRouter.get("/user/connections", adminAuth, async (req, res) => {
             status: "accepted"
         }).populate(
             "fromUserId",
-            ["firstName", "lastName", "age", "gender", "about", "skills"]
+            ["firstName", "lastName", "age", "gender", "about", "skills", "photoUrl"]
         ).populate(
             "toUserId",
-            ["firstName", "lastName", "age", "gender", "about", "skills"]
+            ["firstName", "lastName", "age", "gender", "about", "skills", "photoUrl"]
         );
         res.status(200).json({
             message: "Connections",
@@ -89,9 +89,24 @@ userRouter.get("/user/feed", adminAuth, async (req, res) => {
             return request.fromUserId._id.toString();
         });
 
-        const finalUser = await User.find({
+        // Building dynamic filter
+        const filter = {
             _id: { $nin: [...alreadyConnectedUserIds, loggedInUser._id] }
-        }).select("firstName lastName age gender about skills").skip(skip).limit(limit);
+        };
+
+        if (req.query.gender) {
+            filter.gender = req.query.gender;
+        }
+
+        if (req.query.skills) {
+            const skillList = req.query.skills.split(",");
+            filter.skills = { $in: skillList };
+        }
+
+        const finalUser = await User.find(filter)
+            .select("firstName lastName age gender about skills photoUrl")
+            .skip(skip)
+            .limit(limit);
 
         res.status(200).json({
             message: "Feed",

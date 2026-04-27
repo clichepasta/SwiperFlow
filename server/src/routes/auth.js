@@ -27,7 +27,7 @@ authRouter.post("/signup", async (req, res) => {
             expires: new Date(Date.now() + 3600000)
         });
 
-        res.status(200).json({ message: "User added successfully", data: user });
+        res.status(200).json({ message: "User added successfully" });
     } catch (err) {
         res.status(400).send(err)
     }
@@ -38,7 +38,7 @@ authRouter.post("/login", async (req, res) => {
         const { emailId, password } = req.body;
         const user = await User.findOne({
             emailId: emailId
-        });
+        }).select("+password");
         if (!user) {
             throw new Error("User not found");
         }

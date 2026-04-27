@@ -6,6 +6,8 @@ import { FeedComponent } from './features/feed/feed.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { RequestsComponent } from './features/requests/requests.component';
 import { ConnectionsComponent } from './features/connections/connections.component';
+import { ChatComponent } from './features/chat/chat.component';
+import { ChatWallComponent } from './features/chat-wall/chat-wall.component';
 
 export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
@@ -14,6 +16,8 @@ export const routes: Routes = [
   { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
   { path: 'requests', component: RequestsComponent, canActivate: [authGuard] },
   { path: 'connections', component: ConnectionsComponent, canActivate: [authGuard] },
+  { path: 'chat', component: ChatComponent, canActivate: [authGuard] },
+  { path: 'chat-wall', component: ChatWallComponent, canActivate: [authGuard] },
   { path: '', redirectTo: '/feed', pathMatch: 'full' },
   { path: '**', redirectTo: '/feed' }
 ];

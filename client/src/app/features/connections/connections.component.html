@@ -36,8 +36,6 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           @for (connection of connections(); track connection._id) {
-            <!-- Helper: Sometimes it returns populated users based on who requested who -->
-            <!-- Typically backend maps it to a unified object, we'll assume it's directly accessible -->
             <div class="group relative bg-surface-container-low rounded-xl p-5 border border-transparent hover:border-primary/20 transition-all duration-300 hover:bg-surface-container-high active:scale-[0.98] cursor-pointer">
               <div class="flex items-start gap-4">
                 <img class="w-16 h-16 rounded-lg object-cover ring-1 ring-outline-variant/30 group-hover:ring-primary/40 transition-all" 
@@ -47,7 +45,7 @@
                     <h4 class="font-bold font-headline truncate text-lg">{{ connection.firstName }} {{ connection.lastName }}</h4>
                     <span class="text-[10px] bg-surface-container-highest text-on-surface-variant px-2 py-0.5 rounded-sm font-mono tracking-tighter">OFFLINE</span>
                   </div>
-                  <p class="text-sm text-on-surface-variant mb-3 line-clamp-1">{{ connection.title || 'Developer' }}</p>
+                  <p class="text-sm text-on-surface-variant mb-3 line-clamp-1">{{ connection.about || 'Connected developer' }}</p>
                   <div class="flex gap-2 flex-wrap">
                     @for (skill of connection.skills | slice:0:3; track skill) {
                       <span class="text-[10px] px-2 py-1 bg-surface-container-highest rounded font-mono text-primary-fixed">#{{skill}}</span>
@@ -57,9 +55,14 @@
               </div>
               <div class="mt-4 pt-4 border-t border-outline-variant/10 flex justify-between items-center opacity-60 group-hover:opacity-100 transition-opacity">
                 <p class="text-[10px] font-mono text-on-surface-variant">Matched</p>
-                <div class="flex gap-3">
-                  <span class="material-symbols-outlined text-xl hover:text-primary">forum</span>
-                  <span class="material-symbols-outlined text-xl hover:text-primary">person</span>
+                <div class="flex gap-2">
+                  <a
+                    [routerLink]="['/chat']"
+                    [queryParams]="{ userId: connection._id }"
+                    class="px-3 py-1.5 rounded-lg bg-primary/15 text-primary text-xs font-semibold hover:bg-primary/25 transition-colors"
+                  >
+                    Chat
+                  </a>
                 </div>
               </div>
             </div>
